@@ -1,0 +1,14 @@
+{
+  "name": "hack-vm-translator",
+  "version": "1.0.0",
+  "description": "The Hack VM Translator using Javascript",
+  "main": "src/parser.js",
+  "bin": {
+    "hack-vm-translator": "bin/cli"
+  },
+  "author": "Rahul Thyagaraja",
+  "license": "MIT License",
+  "dependencies": {
+    "line-reader": "^0.4.0"
+  }
+}

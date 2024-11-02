@@ -1,0 +1,57 @@
+#!/usr/bin/env node
+const fs = require('fs');
+const path = require('path');
+
+const { VM_EXTENSION, ASM_EXTENSION } = require('../src/constants');
+
+const input = process.argv[2];
+
+if (!input) {
+  console.error('No file or folder selected');
+  process.exit(1);
+}
+
+const stats = fs.statSync(input);
+
+const currentDir = process.cwd();
+
+let fileName,
+  files = [],
+  destination;
+
+if (stats.isDirectory()) {
+  const list = fs.readdirSync(input);
+
+  fileName = path.basename(input);
+
+  files = list
+    .filter((file) => file.endsWith(VM_EXTENSION))
+    .map((file) => {
+      return {
+        path: path.resolve(input, file),
+        name: path.basename(file).replace(VM_EXTENSION, ''),
+      };
+    });
+
+  destination = path.resolve(input, `${fileName}${ASM_EXTENSION}`);
+} else {
+  const source = path.resolve(currentDir, input);
+
+  fileName = path.basename(source).replace(VM_EXTENSION, '');
+
+  files = [
+    {
+      path: source,
+      name: fileName,
+    },
+  ];
+
+  destination = path.resolve(currentDir, `${fileName}${ASM_EXTENSION}`);
+}
+
+try {
+  require('../src/parser')(fileName, files, destination);
+} catch (error) {
+  console.error(error);
+  process.exit(1);
+}
